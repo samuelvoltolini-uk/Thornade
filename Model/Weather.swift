@@ -2,17 +2,18 @@ import Foundation
 
 struct Weather: Decodable {
     var temperature: Double
+    var weather: [WeatherCondition]
 
     enum CodingKeys: String, CodingKey {
         case temperature = "temp"
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        temperature = try container.decode(Double.self, forKey: .temperature)
+        case weather
     }
 }
 
+struct WeatherCondition: Decodable {
+    var description: String
+}
+
 struct WeatherResponse: Decodable {
-    var main: Weather
+    var current: Weather
 }
