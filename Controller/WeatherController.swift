@@ -7,6 +7,8 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var conditionDescription: String = ""
     @Published var locationName: String = "Loading..."
     @Published var conditionIcon: String = ""
+    @Published var windSpeed : Double = 0.0
+    @Published var humidity : Int = 0
     
     private let locationManager = CLLocationManager()
 
@@ -37,7 +39,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func fetchWeather(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
         let apiKey = "b6d39353e34c61f3946bc54d591c1656"
-        let urlString = "https://api.openweathermap.org/data/3.0/onecall?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
+        let urlString = "https://api.openweathermap.org/data/3.0/onecall?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=imperial"
         
         guard let url = URL(string: urlString) else { return }
 
@@ -49,6 +51,8 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.temperature = weatherResponse.current.temperature
                     self.conditionDescription = weatherResponse.current.weather.first?.description ?? ""
                     self.conditionIcon = weatherResponse.current.weather.first?.icon ?? ""
+                    self.windSpeed = weatherResponse.current.windSpeed
+                    self.humidity = weatherResponse.current.humidity
                 }
             }
             
