@@ -9,6 +9,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var conditionIcon: String = ""
     @Published var windSpeed : Double = 0.0
     @Published var humidity : Int = 0
+    @Published var hourlyForecast: [HourlyWeather] = []
     
     private let locationManager = CLLocationManager()
 
@@ -53,6 +54,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.conditionIcon = weatherResponse.current.weather.first?.icon ?? ""
                     self.windSpeed = weatherResponse.current.windSpeed
                     self.humidity = weatherResponse.current.humidity
+                    self.hourlyForecast = weatherResponse.hourly
                 }
             }
             

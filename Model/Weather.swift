@@ -19,6 +19,17 @@ struct WeatherCondition: Decodable {
     var description: String
 }
 
+struct HourlyWeather: Decodable {
+    var dt: Int
+    var temp: Double
+    var weather: [WeatherCondition]
+
+    enum CodingKeys: String, CodingKey {
+        case dt, temp, weather
+    }
+}
+
 struct WeatherResponse: Decodable {
     var current: Weather
+    var hourly: [HourlyWeather]
 }
