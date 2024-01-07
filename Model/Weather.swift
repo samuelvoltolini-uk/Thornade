@@ -11,6 +11,7 @@ struct Weather: Decodable {
 }
 
 struct WeatherCondition: Decodable {
+    var icon: String
     var description: String
 }
 

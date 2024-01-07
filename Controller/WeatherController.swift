@@ -2,8 +2,12 @@ import Foundation
 import CoreLocation
 
 class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
+    
     @Published var temperature: Double = 0.0
     @Published var conditionDescription: String = ""
+    @Published var locationName: String = "Loading..."
+    @Published var conditionIcon: String = ""
+    
     private let locationManager = CLLocationManager()
 
     override init() {
@@ -16,6 +20,17 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             fetchWeather(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+                guard let self = self, error == nil else { return }
+                if let placemark = placemarks?.first, let town = placemark.locality {
+                    DispatchQueue.main.async {
+                        self.locationName = town
+                    }
+                }
+            }
+
             locationManager.stopUpdatingLocation()
         }
     }
@@ -33,6 +48,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                 DispatchQueue.main.async {
                     self.temperature = weatherResponse.current.temperature
                     self.conditionDescription = weatherResponse.current.weather.first?.description ?? ""
+                    self.conditionIcon = weatherResponse.current.weather.first?.icon ?? ""
                 }
             }
             
