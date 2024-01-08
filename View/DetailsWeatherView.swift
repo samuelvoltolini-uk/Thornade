@@ -78,17 +78,17 @@ struct DetailsWeatherView: View {
 
                     HStack {
                         VStack {
-                            Text("Sunrise")
+                            Text(isDaytime() ? "Sunrise" : "Sunset")
                                 .font(Font.custom("Poppins-Regular", size: 12))
                                 .kerning(1)
                                 .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
 
-                            Image("")
+                            Image("") // Add appropriate image
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 40, height: 40)
 
-                            Text(formatTime(from: weatherController.sunriseTime))
+                            Text(formatTime(from: isDaytime() ? weatherController.sunriseTime : weatherController.sunsetTime))
                                 .font(Font.custom("Poppins-Bold", size: 18))
                                 .kerning(1)
                                 .foregroundColor(Color.accentColor)
@@ -97,17 +97,17 @@ struct DetailsWeatherView: View {
                         Spacer()
 
                         VStack {
-                            Text("Sunset")
+                            Text(isDaytime() ? "Sunset" : "Sunrise")
                                 .font(Font.custom("Poppins-Regular", size: 12))
                                 .kerning(1)
                                 .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
 
-                            Image(systemName: "sun.low") // Placeholder image
+                            Image("") // Add appropriate image
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 40, height: 40)
 
-                            Text(formatTime(from: weatherController.sunsetTime))
+                            Text(formatTime(from: isDaytime() ? weatherController.sunsetTime : weatherController.sunriseTime))
                                 .font(Font.custom("Poppins-Bold", size: 18))
                                 .kerning(1)
                                 .foregroundColor(Color.accentColor)
@@ -128,13 +128,13 @@ struct DetailsWeatherView: View {
                         .cornerRadius(10)
                     
                     VStack {
-                        Text("Wind Speed")
+                        Text("Night Duration")
                             .font(Font.custom("Poppins-Regular", size: 12))
                             .kerning(1)
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                         
-                        Text("\(weatherController.windSpeed, specifier: "%.1f")")
+                        Text(calculateNightDuration())
                             .font(Font.custom("Poppins-Bold", size: 18))
                             .kerning(1)
                             .multilineTextAlignment(.center)
@@ -153,13 +153,13 @@ struct DetailsWeatherView: View {
                         .cornerRadius(10)
                     
                     VStack {
-                        Text("Wind Speed")
+                        Text("Day Duration")
                             .font(Font.custom("Poppins-Regular", size: 12))
                             .kerning(1)
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                         
-                        Text("\(weatherController.windSpeed, specifier: "%.1f")")
+                        Text(calculateDayDuration())
                             .font(Font.custom("Poppins-Bold", size: 18))
                             .kerning(1)
                             .multilineTextAlignment(.center)
@@ -178,13 +178,89 @@ struct DetailsWeatherView: View {
                         .cornerRadius(10)
                     
                     VStack {
-                        Text("Wind Speed")
+                        Text("Visibility")
                             .font(Font.custom("Poppins-Regular", size: 12))
                             .kerning(1)
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                         
-                        Text("\(weatherController.windSpeed, specifier: "%.1f")")
+                        Text(String(format: "%.1f", weatherController.visibility * 0.000621371))
+                            .font(Font.custom("Poppins-Bold", size: 18))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.accentColor)
+                            .padding(.top, 1)
+                    }
+                }
+            }
+            .padding(.top, 5)
+            .padding(.horizontal)
+            
+            
+            HStack {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 118, height: 76)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                    
+                    VStack {
+                        Text("Pressure")
+                            .font(Font.custom("Poppins-Regular", size: 12))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                        
+                        Text("\(weatherController.pressure)")
+                            .font(Font.custom("Poppins-Bold", size: 18))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.accentColor)
+                            .padding(.top, 1)
+                    }
+                }
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 118, height: 76)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                    
+                    VStack {
+                        Text("Dew Point")
+                            .font(Font.custom("Poppins-Regular", size: 12))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                        
+                        Text("\(weatherController.dew_point, specifier: "%.1f")")
+                            .font(Font.custom("Poppins-Bold", size: 18))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.accentColor)
+                            .padding(.top, 1)
+                    }
+                }
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 118, height: 76)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                    
+                    VStack {
+                        Text("UVI")
+                            .font(Font.custom("Poppins-Regular", size: 12))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                        
+                        Text("\(weatherController.uvi, specifier: "%.1f")")
                             .font(Font.custom("Poppins-Bold", size: 18))
                             .kerning(1)
                             .multilineTextAlignment(.center)
@@ -197,6 +273,7 @@ struct DetailsWeatherView: View {
             .padding(.horizontal)
             Spacer()
         }
+        
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
         .background(Color(red: 0.12, green: 0.12, blue: 0.12))
     }
@@ -221,6 +298,38 @@ struct DetailsWeatherView: View {
         default: return ""
         }
     }
+    
+    func calculateNightDuration() -> String {
+        let sunset = Double(weatherController.sunsetTime)
+        var nextSunrise = Double(weatherController.sunriseTime)
+
+        // Ensure nextSunrise is always after sunset (accounting for the next day)
+        if nextSunrise < sunset {
+            nextSunrise += 24 * 3600 // Add 24 hours
+        }
+
+        let nightDurationInSeconds = nextSunrise - sunset
+        let hours = Int(nightDurationInSeconds) / 3600
+        let minutes = Int(nightDurationInSeconds) % 3600 / 60
+
+        return String(format: "%02d:%02d", hours, minutes)
+    }
+    
+    func calculateDayDuration() -> String {
+        let sunrise = Double(weatherController.sunriseTime)
+        let sunset = Double(weatherController.sunsetTime)
+
+        let dayDurationInSeconds = sunset - sunrise
+        let hours = Int(dayDurationInSeconds) / 3600
+        let minutes = Int(dayDurationInSeconds) % 3600 / 60
+
+        return String(format: "%02d:%02d", hours, minutes)
+    }
+    
+    func isDaytime() -> Bool {
+         let currentTime = Date().timeIntervalSince1970
+         return currentTime >= Double(weatherController.sunriseTime) && currentTime < Double(weatherController.sunsetTime)
+     }
 }
 
 

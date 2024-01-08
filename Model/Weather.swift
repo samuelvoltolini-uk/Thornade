@@ -8,6 +8,10 @@ struct Weather: Decodable {
     var feelsLike: Double
     var sunrise: Int
     var sunset: Int
+    var visibility: Double
+    var pressure: Int
+    var dew_point: Double
+    var uvi: Double
 
     enum CodingKeys: String, CodingKey {
         case temperature = "temp"
@@ -17,6 +21,10 @@ struct Weather: Decodable {
         case feelsLike = "feels_like"
         case sunrise = "sunrise"
         case sunset = "sunset"
+        case visibility = "visibility"
+        case pressure = "pressure"
+        case dew_point = "dew_point"
+        case uvi = "uvi"
     }
 }
 

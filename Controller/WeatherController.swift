@@ -15,6 +15,11 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var sunriseTime: Int = 0
     @Published var sunsetTime: Int = 0
     
+    @Published var visibility: Double = 0.0
+    @Published var pressure: Int = 0
+    @Published var dew_point: Double = 0.0
+    @Published var uvi: Double = 0.0
+    
     private let locationManager = CLLocationManager()
 
     override init() {
@@ -62,6 +67,10 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.feelsLike = weatherResponse.current.feelsLike
                     self.sunriseTime = weatherResponse.current.sunrise
                     self.sunsetTime = weatherResponse.current.sunset
+                    self.visibility = weatherResponse.current.visibility
+                    self.pressure = weatherResponse.current.pressure
+                    self.dew_point = weatherResponse.current.dew_point
+                    self.uvi = weatherResponse.current.uvi
                 }
             }
             
