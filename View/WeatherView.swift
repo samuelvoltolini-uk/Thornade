@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct WeatherView: View {
+    
     @StateObject var weatherController = WeatherController()
     
     var currentDate: String {
@@ -143,6 +144,7 @@ struct WeatherView: View {
 }
 
 struct HourlyForecastView: View {
+    
     let hourlyWeather: HourlyWeather
     
     var body: some View {

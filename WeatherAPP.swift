@@ -5,7 +5,7 @@ import SwiftUI
 struct WeatherAPP: App {
     var body: some Scene {
         WindowGroup {
-            WeatherView()
+            MainView()
         }
     }
 }

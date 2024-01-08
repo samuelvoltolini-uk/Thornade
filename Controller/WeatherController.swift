@@ -10,6 +10,10 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var windSpeed : Double = 0.0
     @Published var humidity : Int = 0
     @Published var hourlyForecast: [HourlyWeather] = []
+    @Published var feelsLike : Double = 0.0
+    
+    @Published var sunriseTime: Int = 0
+    @Published var sunsetTime: Int = 0
     
     private let locationManager = CLLocationManager()
 
@@ -55,6 +59,9 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.windSpeed = weatherResponse.current.windSpeed
                     self.humidity = weatherResponse.current.humidity
                     self.hourlyForecast = weatherResponse.hourly
+                    self.feelsLike = weatherResponse.current.feelsLike
+                    self.sunriseTime = weatherResponse.current.sunrise
+                    self.sunsetTime = weatherResponse.current.sunset
                 }
             }
             
