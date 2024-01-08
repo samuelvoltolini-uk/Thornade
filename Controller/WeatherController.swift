@@ -20,6 +20,10 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var dew_point: Double = 0.0
     @Published var uvi: Double = 0.0
     
+    @Published var clouds: Int = 0
+    @Published var wind_deg: Int = 0
+    @Published var wind_gust: Double = 0.0
+    
     private let locationManager = CLLocationManager()
 
     override init() {
@@ -71,6 +75,9 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.pressure = weatherResponse.current.pressure
                     self.dew_point = weatherResponse.current.dew_point
                     self.uvi = weatherResponse.current.uvi
+                    self.clouds = weatherResponse.current.clouds
+                    self.wind_deg = weatherResponse.current.wind_deg
+                    self.wind_gust = weatherResponse.current.wind_gust
                 }
             }
             

@@ -271,7 +271,87 @@ struct DetailsWeatherView: View {
             }
             .padding(.top, 5)
             .padding(.horizontal)
+            
+            HStack {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 118, height: 76)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                    
+                    VStack {
+                        Text("Clouds Cover")
+                            .font(Font.custom("Poppins-Regular", size: 12))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                        
+                        Text("\(weatherController.clouds)%")
+                            .font(Font.custom("Poppins-Bold", size: 18))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.accentColor)
+                            .padding(.top, 1)
+                    }
+                }
+                
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 118, height: 76)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                    
+                    VStack {
+                        Text("Wind Move")
+                            .font(Font.custom("Poppins-Regular", size: 12))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                        
+                        Text(windDirection(from: Double(weatherController.wind_deg)))
+                            .font(Font.custom("Poppins-Bold", size: 18))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.accentColor)
+                            .padding(.top, 1)
+                    }
+                }
+                
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 118, height: 76)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                    
+                    VStack {
+                        Text("Wind Gust")
+                            .font(Font.custom("Poppins-Regular", size: 12))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                        
+                        Text("\(weatherController.wind_gust, specifier: "%.1f")")
+                            .font(Font.custom("Poppins-Bold", size: 18))
+                            .kerning(1)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.accentColor)
+                            .padding(.top, 1)
+                    }
+                }
+            }
+            .padding(.top, 5)
+            .padding(.horizontal)
+            
             Spacer()
+            
+            
         }
         
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
@@ -330,6 +410,12 @@ struct DetailsWeatherView: View {
          let currentTime = Date().timeIntervalSince1970
          return currentTime >= Double(weatherController.sunriseTime) && currentTime < Double(weatherController.sunsetTime)
      }
+    
+    func windDirection(from degrees: Double) -> String {
+            let directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"]
+            let index = Int((degrees + 22.5) / 45.0) % 8
+            return directions[index]
+        }
 }
 
 

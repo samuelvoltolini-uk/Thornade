@@ -12,6 +12,9 @@ struct Weather: Decodable {
     var pressure: Int
     var dew_point: Double
     var uvi: Double
+    var clouds: Int
+    var wind_deg: Int
+    var wind_gust: Double
 
     enum CodingKeys: String, CodingKey {
         case temperature = "temp"
@@ -25,6 +28,9 @@ struct Weather: Decodable {
         case pressure = "pressure"
         case dew_point = "dew_point"
         case uvi = "uvi"
+        case clouds = "clouds"
+        case wind_deg = "wind_deg"
+        case wind_gust = "wind_gust"
     }
 }
 
