@@ -25,14 +25,14 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var wind_gust: Double = 0.0
     
     private let locationManager = CLLocationManager()
-
+    
     override init() {
         super.init()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             fetchWeather(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
@@ -46,20 +46,20 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     }
                 }
             }
-
+            
             locationManager.stopUpdatingLocation()
         }
     }
-
+    
     func fetchWeather(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
         let apiKey = "b6d39353e34c61f3946bc54d591c1656"
         let urlString = "https://api.openweathermap.org/data/3.0/onecall?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=imperial"
         
         guard let url = URL(string: urlString) else { return }
-
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, error == nil else { return }
-
+            
             if let weatherResponse = try? JSONDecoder().decode(WeatherResponse.self, from: data) {
                 DispatchQueue.main.async {
                     self.temperature = weatherResponse.current.temperature
@@ -77,7 +77,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.uvi = weatherResponse.current.uvi
                     self.clouds = weatherResponse.current.clouds
                     self.wind_deg = weatherResponse.current.wind_deg
-                    self.wind_gust = weatherResponse.current.wind_gust
+                    self.wind_gust = weatherResponse.current.wind_gust ?? 0.0
                 }
             }
             

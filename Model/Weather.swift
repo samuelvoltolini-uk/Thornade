@@ -2,19 +2,19 @@ import Foundation
 
 struct Weather: Decodable {
     var temperature: Double
-    var weather: [WeatherCondition]
-    var windSpeed: Double
-    var humidity: Int
-    var feelsLike: Double
-    var sunrise: Int
-    var sunset: Int
-    var visibility: Double
-    var pressure: Int
-    var dew_point: Double
-    var uvi: Double
-    var clouds: Int
-    var wind_deg: Int
-    var wind_gust: Double
+        var weather: [WeatherCondition]
+        var windSpeed: Double
+        var humidity: Int
+        var feelsLike: Double
+        var sunrise: Int
+        var sunset: Int
+        var visibility: Double
+        var pressure: Int
+        var dew_point: Double
+        var uvi: Double
+        var clouds: Int
+        var wind_deg: Int
+        var wind_gust: Double?
 
     enum CodingKeys: String, CodingKey {
         case temperature = "temp"
