@@ -11,352 +11,364 @@ struct DetailsWeatherView: View {
     }
     
     var body: some View {
-        VStack {
-            Text(weatherController.locationName)
-                .font(Font.custom("Poppins-Bold", size: 24))
-                .kerning(1)
-                .multilineTextAlignment(.center)
-            
-            Text(currentDate)
-                .font(Font.custom("Poppins-Regular", size: 14))
-                .kerning(1)
-                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                .padding(.bottom, 5)
-            
-            ZStack {
+            VStack {
+                Text(weatherController.locationName)
+                    .font(Font.custom("Poppins-Bold", size: 24))
+                    .kerning(1)
+                    .multilineTextAlignment(.center)
                 
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .frame(width: 400, height: 200)
-                    .background(.quinary)
-                    .cornerRadius(10)
-                    .overlay(
+                Text(currentDate)
+                    .font(Font.custom("Poppins-Regular", size: 14))
+                    .kerning(1)
+                    .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                    .padding(.bottom, 5)
+                
+                ZStack {
+                    
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(width: 400, height: 200)
+                        .background(.quinary)
+                        .cornerRadius(10)
+                        .overlay(
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Image("\(weatherController.conditionIcon)H")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 120, height: 120)
+                                    
+                                    Text(weatherController.conditionDescription.capitalizedFirstLetter())
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .foregroundColor(Color.accentColor)
+                                    
+                                    
+                                    Text(timeOfDay())
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                }
+                                Spacer()
+                                VStack {
+                                    Text("\( (weatherController.temperature - 32) * 5 / 9, specifier: "%.1f")°")
+                                        .font(Font.custom("Poppins-Bold", size: 60))
+                                        .kerning(1)
+                                        .foregroundColor(Color.accentColor)
+                                    
+                                    Text("Feels like \( (weatherController.feelsLike - 32) * 5 / 9, specifier: "%.0f")°")
+                                        .font(Font.custom("Poppins-Regular", size: 14))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                }
+                            }
+                                .padding()
+                        )
+                }
+                
+                HStack {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 400, height: 76)
+                            .background(.quinary) // Assuming .quinary is a defined color
+                            .cornerRadius(10)
+                    }
+                }
+                .padding(.top, 10)
+                .padding(.horizontal)
+                
+                HStack {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 400, height: 120)
+                            .background(.quinary) // Assuming .quinary is a defined color
+                            .cornerRadius(10)
+                        
+                        SunMoonAnimationView(weatherController: weatherController)
+                        
                         HStack {
-                            VStack(alignment: .leading) {
-                                Image("\(weatherController.conditionIcon)H")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 120, height: 120)
-                                
-                                Text(weatherController.conditionDescription.capitalizedFirstLetter())
-                                    .font(Font.custom("Poppins-Bold", size: 18))
-                                    .kerning(1)
-                                    .foregroundColor(Color.accentColor)
-                                
-                                
-                                Text(timeOfDay())
+                            VStack {
+                                Text(isDaytime() ? "Sunrise" : "Sunset")
                                     .font(Font.custom("Poppins-Regular", size: 12))
                                     .kerning(1)
                                     .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                            }
-                            Spacer()
-                            VStack {
-                                Text("\( (weatherController.temperature - 32) * 5 / 9, specifier: "%.1f")°")
-                                    .font(Font.custom("Poppins-Bold", size: 60))
+                                
+                                Image("") // Add appropriate image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, height: 40)
+                                
+                                Text(formatTime(from: isDaytime() ? weatherController.sunriseTime : weatherController.sunsetTime))
+                                    .font(Font.custom("Poppins-Bold", size: 18))
                                     .kerning(1)
                                     .foregroundColor(Color.accentColor)
-                                
-                                Text("Feels like \( (weatherController.feelsLike - 32) * 5 / 9, specifier: "%.0f")°")
-                                    .font(Font.custom("Poppins-Regular", size: 14))
+                            }
+                            
+                            Spacer()
+                            
+                            VStack {
+                                Text(isDaytime() ? "Sunset" : "Sunrise")
+                                    .font(Font.custom("Poppins-Regular", size: 12))
                                     .kerning(1)
                                     .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                
+                                Image("") // Add appropriate image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, height: 40)
+                                
+                                Text(formatTime(from: isDaytime() ? weatherController.sunsetTime : weatherController.sunriseTime))
+                                    .font(Font.custom("Poppins-Bold", size: 18))
+                                    .kerning(1)
+                                    .foregroundColor(Color.accentColor)
                             }
                         }
-                            .padding()
-                    )
+                        .padding(.horizontal)
+                    }
+                }
+                .padding(.top, 10)
+                .padding(.horizontal)
                 
-            }
-            HStack {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 400, height: 120)
-                        .background(.quinary) // Assuming .quinary is a defined color
-                        .cornerRadius(10)
-                    
-                    SunMoonAnimationView(weatherController: weatherController)
-
-                    HStack {
+                HStack {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
                         VStack {
-                            Text(isDaytime() ? "Sunrise" : "Sunset")
+                            Text("Night Duration")
                                 .font(Font.custom("Poppins-Regular", size: 12))
                                 .kerning(1)
+                                .multilineTextAlignment(.center)
                                 .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-
-                            Image("") // Add appropriate image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 40, height: 40)
-
-                            Text(formatTime(from: isDaytime() ? weatherController.sunriseTime : weatherController.sunsetTime))
+                            
+                            Text(calculateNightDuration())
                                 .font(Font.custom("Poppins-Bold", size: 18))
                                 .kerning(1)
+                                .multilineTextAlignment(.center)
                                 .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
                         }
-
-                        Spacer()
-
+                    }
+                    
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
                         VStack {
-                            Text(isDaytime() ? "Sunset" : "Sunrise")
+                            Text("Day Duration")
                                 .font(Font.custom("Poppins-Regular", size: 12))
                                 .kerning(1)
+                                .multilineTextAlignment(.center)
                                 .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-
-                            Image("") // Add appropriate image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 40, height: 40)
-
-                            Text(formatTime(from: isDaytime() ? weatherController.sunsetTime : weatherController.sunriseTime))
+                            
+                            Text(calculateDayDuration())
                                 .font(Font.custom("Poppins-Bold", size: 18))
                                 .kerning(1)
+                                .multilineTextAlignment(.center)
                                 .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
                         }
                     }
-                    .padding(.horizontal)
+                    
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("Visibility")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text(String(format: "%.1f", weatherController.visibility * 0.000621371))
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
                 }
+                .padding(.top, 5)
+                .padding(.horizontal)
+                
+                
+                HStack {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("Pressure")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text("\(weatherController.pressure)")
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("Dew Point")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text("\(weatherController.dew_point, specifier: "%.1f")")
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("UVI")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text("\(weatherController.uvi, specifier: "%.1f")")
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
+                }
+                .padding(.top, 5)
+                .padding(.horizontal)
+                
+                HStack {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("Clouds Cover")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text("\(weatherController.clouds)%")
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("Wind Move")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text(windDirection(from: Double(weatherController.wind_deg)))
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.clear)
+                            .frame(width: 118, height: 76)
+                            .background(.quinary)
+                            .cornerRadius(10)
+                        
+                        VStack {
+                            Text("Wind Gust")
+                                .font(Font.custom("Poppins-Regular", size: 12))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                            
+                            Text("\(weatherController.wind_gust, specifier: "%.1f")")
+                                .font(Font.custom("Poppins-Bold", size: 18))
+                                .kerning(1)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(Color.accentColor)
+                                .padding(.top, 1)
+                        }
+                    }
+                }
+                .padding(.top, 5)
+                .padding(.horizontal)
+                
+                Spacer()
+                
+                
             }
-            .padding(.top, 10)
-            .padding(.horizontal)
-
-            HStack {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Night Duration")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text(calculateNightDuration())
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-                
-                Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Day Duration")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text(calculateDayDuration())
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-                
-                Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Visibility")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text(String(format: "%.1f", weatherController.visibility * 0.000621371))
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-            }
-            .padding(.top, 5)
-            .padding(.horizontal)
-            
-            
-            HStack {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Pressure")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text("\(weatherController.pressure)")
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-                Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Dew Point")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text("\(weatherController.dew_point, specifier: "%.1f")")
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-                Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("UVI")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text("\(weatherController.uvi, specifier: "%.1f")")
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-            }
-            .padding(.top, 5)
-            .padding(.horizontal)
-            
-            HStack {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Clouds Cover")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text("\(weatherController.clouds)%")
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-                
-                Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Wind Move")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text(windDirection(from: Double(weatherController.wind_deg)))
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-                
-                Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 118, height: 76)
-                        .background(.quinary)
-                        .cornerRadius(10)
-                    
-                    VStack {
-                        Text("Wind Gust")
-                            .font(Font.custom("Poppins-Regular", size: 12))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                        
-                        Text("\(weatherController.wind_gust, specifier: "%.1f")")
-                            .font(Font.custom("Poppins-Bold", size: 18))
-                            .kerning(1)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.accentColor)
-                            .padding(.top, 1)
-                    }
-                }
-            }
-            .padding(.top, 5)
-            .padding(.horizontal)
-            
-            Spacer()
-            
-            
+            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
+            .background(Color(red: 0.12, green: 0.12, blue: 0.12))
         }
-        
-        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
-        .background(Color(red: 0.12, green: 0.12, blue: 0.12))
-    }
+    
     
 
         func formatTime(from timestamp: Int) -> String {

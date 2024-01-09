@@ -19,7 +19,7 @@ struct SunMoonAnimationView: View {
                             .scaledToFit()
                             .frame(width: 35, height: 35)
                             .scaleEffect(sunScale)
-                            .position(x: sunPosition+40, y: geometry.size.height / 2)
+                            .position(x: sunPosition, y: geometry.size.height / 2)
                             .transition(.opacity)
                             .onAppear {
                                 withAnimation(Animation.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
@@ -32,7 +32,7 @@ struct SunMoonAnimationView: View {
                             .scaledToFit()
                             .frame(width: 35, height: 35)
                             .scaleEffect(moonScale)
-                            .position(x: moonPosition+40, y: geometry.size.height / 2)
+                            .position(x: moonPosition, y: geometry.size.height / 2)
                             .transition(.opacity)
                             .onAppear {
                                 withAnimation(Animation.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
@@ -43,7 +43,7 @@ struct SunMoonAnimationView: View {
                 }
             }
         }
-        .frame(width: 400, height: 120)
+        .frame(width: 320, height: 120)
     }
     
     private func isDaytime() -> Bool {
