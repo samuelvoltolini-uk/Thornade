@@ -7,10 +7,14 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var conditionDescription: String = ""
     @Published var locationName: String = "Loading..."
     @Published var conditionIcon: String = ""
+    @Published var id: Int = 0
     @Published var windSpeed : Double = 0.0
     @Published var humidity : Int = 0
     @Published var hourlyForecast: [HourlyWeather] = []
     @Published var feelsLike : Double = 0.0
+    
+    var lastLatitude: CLLocationDegrees?
+    var lastLongitude: CLLocationDegrees?
     
     @Published var sunriseTime: Int = 0
     @Published var sunsetTime: Int = 0
@@ -65,6 +69,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.temperature = weatherResponse.current.temperature
                     self.conditionDescription = weatherResponse.current.weather.first?.description ?? ""
                     self.conditionIcon = weatherResponse.current.weather.first?.icon ?? ""
+                    self.id = weatherResponse.current.weather.first?.id ?? 0
                     self.windSpeed = weatherResponse.current.windSpeed
                     self.humidity = weatherResponse.current.humidity
                     self.hourlyForecast = weatherResponse.hourly
@@ -78,10 +83,21 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.clouds = weatherResponse.current.clouds
                     self.wind_deg = weatherResponse.current.wind_deg
                     self.wind_gust = weatherResponse.current.wind_gust ?? 0.0
+                    self.lastLatitude = latitude
+                    self.lastLongitude = longitude
                 }
             }
             
         }.resume()
+    }
+    
+    func refreshWeather() {
+        guard let latitude = lastLatitude, let longitude = lastLongitude else {
+            print("No last known location available.")
+            return
+        }
+
+        fetchWeather(latitude: latitude, longitude: longitude)
     }
 }
 

@@ -18,6 +18,11 @@ struct MainView: View {
                 .tabItem {
                     Label("7 Days", systemImage: "calendar.badge.clock")
                 }
+            
+            OtherPlacesView()
+                .tabItem {
+                    Label("Places", systemImage: "location.circle.fill")
+                }
         }
     }
 }

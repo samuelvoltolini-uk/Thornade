@@ -37,16 +37,26 @@ struct Weather: Decodable {
 struct WeatherCondition: Decodable {
     var icon: String
     var description: String
+    var id: Int
 }
 
 struct HourlyWeather: Decodable {
     var dt: Int
     var temp: Double
     var weather: [WeatherCondition]
+    var rain: [String: Double]?
+    var snow: [String: Double]?
+    var wind_speed: Double
+    var clouds: Int
+    var uvi: Double
 
     enum CodingKeys: String, CodingKey {
-        case dt, temp, weather
+        case dt, temp, weather, rain, snow, wind_speed, clouds, uvi
     }
+}
+
+extension HourlyWeather: Identifiable {
+    var id: Int { dt }
 }
 
 struct WeatherResponse: Decodable {
