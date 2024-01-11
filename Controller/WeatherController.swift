@@ -13,6 +13,8 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var hourlyForecast: [HourlyWeather] = []
     @Published var feelsLike : Double = 0.0
     
+    @Published var dailyForecast: [DailyWeather] = []
+    
     var lastLatitude: CLLocationDegrees?
     var lastLongitude: CLLocationDegrees?
     
@@ -85,6 +87,7 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
                     self.wind_gust = weatherResponse.current.wind_gust ?? 0.0
                     self.lastLatitude = latitude
                     self.lastLongitude = longitude
+                    self.dailyForecast = weatherResponse.daily
                 }
             }
             
@@ -98,6 +101,17 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
 
         fetchWeather(latitude: latitude, longitude: longitude)
+    }
+    
+    func dayOfWeek(for timestamp: Int) -> String {
+        // Convert timestamp to a Date
+        let date = Date(timeIntervalSince1970: Double(timestamp))
+        // Create a DateFormatter
+        let dateFormatter = DateFormatter()
+        // Set the date format to weekday
+        dateFormatter.dateFormat = "EEEE" // "EEEE" is the format for full weekday name
+        // Return the formatted date string
+        return dateFormatter.string(from: date)
     }
 }
 

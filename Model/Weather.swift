@@ -68,4 +68,19 @@ extension HourlyWeather: Identifiable {
 struct WeatherResponse: Decodable {
     var current: Weather
     var hourly: [HourlyWeather]
+    var daily: [DailyWeather]
+    
+}
+
+struct DailyWeather: Decodable, Identifiable {
+    let id: Int 
+    var icon: String
+    var dt: Int
+    var temp: Temp
+    var weather: [WeatherCondition]
+    
+    struct Temp: Decodable {
+        var min: Double
+        var max: Double
+    }
 }
