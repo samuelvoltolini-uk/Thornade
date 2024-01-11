@@ -3,18 +3,16 @@ import Charts
 
 struct DetailsWeatherView: View {
     
-    private let barColors: [Color] = [.cyan, .white, .mint, .pink, .purple, .blue, .green, .orange]
+    private let barColors: [Color] = [.cyan, .white, .mint, .pink, .purple, .blue, .green, .orange, .yellow, .indigo, .red]
     
     let temperatureGradient = Gradient(colors: [
-        Color(red: 0, green: 0, blue: 1),             // Blue, -30°C, very cold
-        Color(red: 0, green: 1, blue: 1),             // Cyan, -20°C, cold
-        Color(red: 0, green: 0.5, blue: 0.5),         // Teal, -10°C, chilly
-        Color(red: 0, green: 1, blue: 0),             // Green, 0°C, cool
-        Color(red: 0.5, green: 1, blue: 0.5),         // Light Green, 10°C, mild cool
-        Color(red: 1, green: 1, blue: 0),             // Yellow, 20°C, mild
-        Color(red: 1, green: 0.647, blue: 0),         // Orange, 30°C, warm
-        Color(red: 1, green: 0.549, blue: 0),         // Deep Orange, 40°C, hot
-        Color(red: 1, green: 0, blue: 0)              // Red, 50°C, very hot
+        Color.blue,       
+        Color.cyan,
+        Color.teal,
+        Color.green,
+        Color.yellow,
+        Color.orange,
+        Color.red
     ])
 
     
@@ -195,6 +193,49 @@ struct DetailsWeatherView: View {
                                     .frame(width: 400, height: 300)
                                     .background(.quinary)
                                     .cornerRadius(10)
+
+                                VStack(alignment: .leading) {
+                                    Text("Probability of Precipitation Next 24 Hours (%)")
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                    
+                                    Text("\(averagePoPForToday() * 100, specifier: "%.1f")%")
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.accentColor)
+                                    
+                                    Chart {
+                                        ForEach(aggregatePoPByThreeHours(), id: \.hour) { data in
+                                            BarMark(
+                                                x: .value("3-Hour Interval", data.hour),
+                                                y: .value("Probability", data.pop * 100) // Convert to percentage
+                                            )
+                                            .cornerRadius(5.0)
+                                            .foregroundStyle(barColors[0])
+                                        }
+                                    }
+                                    .padding(.top, 20)
+                                    .frame(width: 370, height: 215)
+                                    .font(Font.custom("Poppins-Bold", size: 12))
+                                    .kerning(1)
+                                    .chartXAxis {
+                                        AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 400, height: 300)
+                                    .background(.quinary)
+                                    .cornerRadius(10)
                                 
                                 
                                 VStack(alignment: .leading) {
@@ -241,29 +282,29 @@ struct DetailsWeatherView: View {
                                 Rectangle()
                                     .foregroundColor(.clear)
                                     .frame(width: 400, height: 300)
-                                    .background(.quinary)
+                                    .background(.quinary) // Assuming .quinary is a defined color
                                     .cornerRadius(10)
                                 
                                 VStack(alignment: .leading) {
-                                    Text("Average Temperature 24 Hours (°C)")
+                                    Text("Cloud Coverage Average 24 Hours (%)")
                                         .font(Font.custom("Poppins-Regular", size: 12))
                                         .kerning(1)
                                         .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                                     
-                                    Text("\(averageTemperatureForNext24HoursInCelsius(), specifier: "%.1f")°C")
+                                    Text("\(averageCloudCoverageForNext24Hours())%")
                                         .font(Font.custom("Poppins-Bold", size: 18))
                                         .kerning(1)
                                         .multilineTextAlignment(.center)
                                         .foregroundColor(.accentColor)
                                     
                                     Chart {
-                                        ForEach(aggregateTemperatureByThreeHours(), id: \.hour) { data in
+                                        ForEach(aggregateCloudCoverageByThreeHours(), id: \.hour) { data in
                                             BarMark(
                                                 x: .value("3-Hour Interval", data.hour),
-                                                y: .value("Temperature", data.temperature)
+                                                y: .value("Cloud Coverage", data.cloudCoverage)
                                             )
                                             .cornerRadius(5.0)
-                                            .foregroundStyle(barColors[4]) // Choose an appropriate color
+                                            .foregroundStyle(barColors[1])
                                         }
                                     }
                                     .padding(.top, 20)
@@ -350,6 +391,225 @@ struct DetailsWeatherView: View {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
+                                    .frame(width: 400, height: 300)
+                                    .background(.quinary)
+                                    .cornerRadius(10)
+                                
+                                VStack(alignment: .leading) {
+                                    Text("Feels Like Temperature Average 24 Hours (°C)")
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                    
+                                    Text("\(averageFeelsLikeTemperatureForNext24Hours(), specifier: "%.1f")°C")
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.accentColor)
+                                    
+                                    Chart {
+                                        ForEach(aggregateFeelsLikeTemperatureByThreeHours(), id: \.hour) { data in
+                                            BarMark(
+                                                x: .value("3-Hour Interval", data.hour),
+                                                y: .value("Feels Like Temperature", data.feelsLikeTemperature)
+                                            )
+                                            .cornerRadius(5.0)
+                                            .foregroundStyle(barColors[3])
+                                        }
+                                    
+                                    }
+                                    .padding(.top, 20)
+                                    .frame(width: 370, height: 215)
+                                    .font(Font.custom("Poppins-Bold", size: 12))
+                                    .kerning(1)
+                                    .chartXAxis {
+                                        AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 400, height: 300)
+                                    .background(.quinary)
+                                    .cornerRadius(10)
+                                
+                                VStack(alignment: .leading) {
+                                    Text("Humidity 24 Hours (%)")
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                    
+                                    Text("\(averageHumidityForNext24Hours())%")
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.accentColor)
+                                    
+                                    Chart {
+                                        ForEach(aggregateHumidityByThreeHours(), id: \.hour) { data in
+                                            BarMark(
+                                                x: .value("3-Hour Interval", data.hour),
+                                                y: .value("Humidity", data.humidity)
+                                            )
+                                            .cornerRadius(5.0)
+                                            .foregroundStyle(barColors[5])
+                                        }
+                                    }
+                                    .padding(.top, 20)
+                                    .frame(width: 370, height: 215)
+                                    .font(Font.custom("Poppins-Bold", size: 12))
+                                    .kerning(1)
+                                    .chartXAxis {
+                                        AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                                    }
+                                    
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 400, height: 300)
+                                    .background(.quinary)
+                                    .cornerRadius(10)
+                                
+                                VStack(alignment: .leading) {
+                                    Text("Visibility Average Next 24 Hours (Miles)")
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                    
+                                  
+                                    Text("\(String(format: "%.2f", averageVisibilityForNext24Hours()))")
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.accentColor)
+                                    
+                                    Chart {
+                                        ForEach(aggregateVisibilityByThreeHours(), id: \.hour) { data in
+                                            BarMark(
+                                                x: .value("3-Hour Interval", data.hour),
+                                                y: .value("Visibility", data.visibility)
+                                            )
+                                            .cornerRadius(5.0)
+                                            .foregroundStyle(barColors[6])
+                                        }
+                                    }
+                                    .padding(.top, 20)
+                                    .frame(width: 370, height: 215)
+                                    .font(Font.custom("Poppins-Bold", size: 12))
+                                    .kerning(1)
+                                    .chartXAxis {
+                                        AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 400, height: 300)
+                                    .background(.quinary)
+                                    .cornerRadius(10)
+                                
+                                VStack(alignment: .leading) {
+                                    Text("Current and Average 24 Hours Dew Point (°C)")
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                    
+                                    
+                                    Text(String(format: "%.1f°C", convertToFahrenheit(weatherController.dew_point)))
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.accentColor)
+                                    
+                                    Chart {
+                                        ForEach(aggregateDewPointByThreeHours(), id: \.hour) { data in
+                                            BarMark(
+                                                x: .value("3-Hour Interval", data.hour),
+                                                y: .value("Dew Point", data.dewPoint)
+                                            )
+                                            .cornerRadius(5.0)
+                                            .foregroundStyle(barColors[10])
+                                        }
+                                    }
+                                    .padding(.top, 20)
+                                    .frame(width: 370, height: 215)
+                                    .font(Font.custom("Poppins-Bold", size: 12))
+                                    .kerning(1)
+                                    .chartXAxis {
+                                        AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 400, height: 300)
+                                    .background(.quinary)
+                                    .cornerRadius(10)
+                                
+                                VStack(alignment: .leading) {
+                                    Text("Current Pressure and Next 24 Hours (hPa)")
+                                        .font(Font.custom("Poppins-Regular", size: 12))
+                                        .kerning(1)
+                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
+                                    
+                                    Text("\(String(format: "%.1f", currentHourPressure()))")
+                                        .font(Font.custom("Poppins-Bold", size: 18))
+                                        .kerning(1)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(.accentColor)
+                                    
+                                    Chart {
+                                        ForEach(aggregatePressureByThreeHours(), id: \.hour) { data in
+                                            BarMark(
+                                                x: .value("3-Hour Interval", data.hour),
+                                                y: .value("Pressure", data.pressure)
+                                            )
+                                            .cornerRadius(5.0)
+                                            .foregroundStyle(barColors[8])
+                                        }
+                                    }
+                                    .padding(.top, 20)
+                                    .frame(width: 370, height: 215)
+                                    .font(Font.custom("Poppins-Bold", size: 12))
+                                    .kerning(1)
+                                    .chartXAxis {
+                                        AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.top, 10)
+                        .padding(.horizontal)
+                        
+                        HStack {
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
                                     .frame(width: 118, height: 76)
                                     .background(.quinary)
                                     .cornerRadius(10)
@@ -401,14 +661,16 @@ struct DetailsWeatherView: View {
                                     .cornerRadius(10)
                                 
                                 VStack {
-                                    Text("Chance")
+                                    Text("Wind Move")
                                         .font(Font.custom("Poppins-Regular", size: 12))
                                         .kerning(1)
+                                        .multilineTextAlignment(.center)
                                         .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                                     
-                                    Text(formatTime(from: weatherController.sunsetTime))
+                                    Text(windDirection(from: Double(weatherController.wind_deg)))
                                         .font(Font.custom("Poppins-Bold", size: 18))
                                         .kerning(1)
+                                        .multilineTextAlignment(.center)
                                         .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                                         .padding(.top, 1)
                                 }
@@ -476,159 +738,6 @@ struct DetailsWeatherView: View {
                                     .cornerRadius(10)
                                 
                                 VStack {
-                                    Text("Visibility")
-                                        .font(Font.custom("Poppins-Regular", size: 12))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                    
-                                    Text(String(format: "%.1f", weatherController.visibility * 0.000621371))
-                                        .font(Font.custom("Poppins-Bold", size: 18))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                        .padding(.top, 1)
-                                }
-                            }
-                        }
-                        .padding(.top, 5)
-                        .padding(.horizontal)
-                        
-                        
-                        HStack {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 118, height: 76)
-                                    .background(.quinary)
-                                    .cornerRadius(10)
-                                
-                                VStack {
-                                    Text("Pressure")
-                                        .font(Font.custom("Poppins-Regular", size: 12))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                    
-                                    Text("\(weatherController.pressure)")
-                                        .font(Font.custom("Poppins-Bold", size: 18))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                        .padding(.top, 1)
-                                }
-                            }
-                            Spacer()
-                            
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 118, height: 76)
-                                    .background(.quinary)
-                                    .cornerRadius(10)
-                                
-                                VStack {
-                                    Text("Dew Point")
-                                        .font(Font.custom("Poppins-Regular", size: 12))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                    
-                                    Text("\(weatherController.dew_point, specifier: "%.1f")")
-                                        .font(Font.custom("Poppins-Bold", size: 18))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                        .padding(.top, 1)
-                                }
-                            }
-                            Spacer()
-                            
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 118, height: 76)
-                                    .background(.quinary)
-                                    .cornerRadius(10)
-                                
-                                VStack {
-                                    Text("UVI")
-                                        .font(Font.custom("Poppins-Regular", size: 12))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                    
-                                    Text("\(weatherController.uvi, specifier: "%.1f")")
-                                        .font(Font.custom("Poppins-Bold", size: 18))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                        .padding(.top, 1)
-                                }
-                            }
-                        }
-                        .padding(.top, 5)
-                        .padding(.horizontal)
-                        
-                        HStack {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 118, height: 76)
-                                    .background(.quinary)
-                                    .cornerRadius(10)
-                                
-                                VStack {
-                                    Text("Clouds Cover")
-                                        .font(Font.custom("Poppins-Regular", size: 12))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                    
-                                    Text("\(weatherController.clouds)%")
-                                        .font(Font.custom("Poppins-Bold", size: 18))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                        .padding(.top, 1)
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 118, height: 76)
-                                    .background(.quinary)
-                                    .cornerRadius(10)
-                                
-                                VStack {
-                                    Text("Wind Move")
-                                        .font(Font.custom("Poppins-Regular", size: 12))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                    
-                                    Text(windDirection(from: Double(weatherController.wind_deg)))
-                                        .font(Font.custom("Poppins-Bold", size: 18))
-                                        .kerning(1)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
-                                        .padding(.top, 1)
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 118, height: 76)
-                                    .background(.quinary)
-                                    .cornerRadius(10)
-                                
-                                VStack {
                                     Text("Wind Gust")
                                         .font(Font.custom("Poppins-Regular", size: 12))
                                         .kerning(1)
@@ -647,7 +756,6 @@ struct DetailsWeatherView: View {
                         .padding(.top, 5)
                         .padding(.horizontal)
                         
-                        Spacer()
                     }
                 }
                 .refreshable {
@@ -670,9 +778,7 @@ struct DetailsWeatherView: View {
         }
         .scrollIndicators(.hidden)
     }
-    
-    
-    
+
     func formatTime(from timestamp: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         let formatter = DateFormatter()
@@ -857,14 +963,18 @@ extension DetailsWeatherView {
     }
     
     func aggregateTemperatureByThreeHours() -> [(hour: String, temperature: Double)] {
-        stride(from: 0, to: weatherController.hourlyForecast.count, by: 3).map { startIndex -> (String, Double) in
-            let endIndex = min(startIndex + 3, weatherController.hourlyForecast.count)
+        // Limit the data to the first 24 hours
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+        
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Double) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
             let range = startIndex..<endIndex
             
-            let averageTemperatureFahrenheit = weatherController.hourlyForecast[range].map { $0.temp }.reduce(0, +) / Double(range.count)
+            let sumTemperatureFahrenheit = limitedForecast[range].map { $0.temp }.reduce(0, +)
+            let averageTemperatureFahrenheit = Double(sumTemperatureFahrenheit) / Double(range.count)
             let averageTemperatureCelsius = (averageTemperatureFahrenheit - 32) * 5 / 9
             
-            let hourString = formatHourString(from: weatherController.hourlyForecast[startIndex].dt)
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
             return (hourString, averageTemperatureCelsius)
         }
     }
@@ -872,7 +982,7 @@ extension DetailsWeatherView {
     func averageTemperatureForNext24HoursInCelsius() -> Double {
         let totalHours = min(weatherController.hourlyForecast.count, 24)
         guard totalHours > 0 else { return 0.0 }
-        
+
         let totalTemperatureFahrenheit = weatherController.hourlyForecast.prefix(24).map { $0.temp }.reduce(0, +)
         let averageTemperatureFahrenheit = totalTemperatureFahrenheit / Double(totalHours)
         return (averageTemperatureFahrenheit - 32) * 5 / 9
@@ -882,6 +992,154 @@ extension DetailsWeatherView {
         let normalizedTemperature = (temperature + 30) / 80 // Normalize temperature to a 0-1 scale
         return Color(temperatureGradient.stops[Int(normalizedTemperature * Double(temperatureGradient.stops.count - 1))].color)
     }
+    
+    func aggregateFeelsLikeTemperatureByThreeHours() -> [(hour: String, feelsLikeTemperature: Double)] {
+        // Limit the data to the first 24 hours if necessary
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Double) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
+            let range = startIndex..<endIndex
+
+            let sumFeelsLikeTemperatureInFahrenheit = limitedForecast[range].map { $0.feels_like }.reduce(0, +)
+            let averageFeelsLikeTemperatureInFahrenheit = range.count > 0 ? sumFeelsLikeTemperatureInFahrenheit / Double(range.count) : 0
+            let averageFeelsLikeTemperatureInCelsius = (averageFeelsLikeTemperatureInFahrenheit - 32) * 5 / 9
+
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
+            return (hourString, averageFeelsLikeTemperatureInCelsius)
+        }
+    }
+
+    func averageFeelsLikeTemperatureForNext24Hours() -> Double {
+        let totalHours = min(weatherController.hourlyForecast.count, 24)
+        guard totalHours > 0 else { return 0 }
+
+        let sumFeelsLikeTemperatureInFahrenheit = weatherController.hourlyForecast.prefix(24).map { $0.feels_like }.reduce(0, +)
+        let averageFeelsLikeTemperatureInFahrenheit = sumFeelsLikeTemperatureInFahrenheit / Double(totalHours)
+        let averageFeelsLikeTemperatureInCelsius = (averageFeelsLikeTemperatureInFahrenheit - 32) * 5 / 9
+
+        return averageFeelsLikeTemperatureInCelsius
+    }
+    
+    func aggregateHumidityByThreeHours() -> [(hour: String, humidity: Int)] {
+        // Limit the data to the first 24 hours
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Int) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
+            let range = startIndex..<endIndex
+            
+            let sumHumidity = limitedForecast[range].map { $0.humidity }.reduce(0, +)
+            let averageHumidity = range.count > 0 ? sumHumidity / range.count : 0
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
+            
+            return (hourString, averageHumidity)
+        }
+    }
+
+    func averageHumidityForNext24Hours() -> Int {
+        let totalHours = min(weatherController.hourlyForecast.count, 24)
+        guard totalHours > 0 else { return 0 }
+        
+        let sumHumidity = weatherController.hourlyForecast.prefix(24).map { $0.humidity }.reduce(0, +)
+        let average = sumHumidity / totalHours
+        
+        return average
+    }
+    
+    func metersToMiles(_ meters: Double) -> Double {
+        return meters / 1609.34
+    }
+    
+    func aggregateVisibilityByThreeHours() -> [(hour: String, visibility: Double)] {
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Double) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
+            let range = startIndex..<endIndex
+
+            let sumVisibility = limitedForecast[range].map { $0.visibility }.reduce(0, +)
+            let averageVisibilityMeters = range.count > 0 ? Double(sumVisibility) / Double(range.count) : 0
+            let averageVisibilityMiles = metersToMiles(averageVisibilityMeters)
+
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
+            return (hourString, averageVisibilityMiles)
+        }
+    }
+    
+    func averageVisibilityForNext24Hours() -> Double {
+        let totalHours = min(weatherController.hourlyForecast.count, 24)
+        guard totalHours > 0 else { return 0 }
+
+        let sumVisibility = weatherController.hourlyForecast.prefix(24).map { $0.visibility }.reduce(0, +)
+        let averageVisibilityMeters = Double(sumVisibility) / Double(totalHours)
+        return metersToMiles(averageVisibilityMeters)
+    }
+    
+    func aggregatePressureByThreeHours() -> [(hour: String, pressure: Double)] {
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Double) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
+            let range = startIndex..<endIndex
+
+            let sumPressure = limitedForecast[range].map { $0.pressure }.reduce(0, +)
+            let averagePressure = range.count > 0 ? Double(sumPressure) / Double(range.count) : 0
+
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
+            return (hourString, averagePressure)
+        }
+    }
+    
+    func currentHourPressure() -> Double {
+        guard let currentHourData = weatherController.hourlyForecast.first else { return 0 }
+        return Double(currentHourData.pressure)
+    }
+    
+    func aggregateDewPointByThreeHours() -> [(hour: String, dewPoint: Double)] {
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Double) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
+            let range = startIndex..<endIndex
+
+            let sumDewPointFahrenheit = limitedForecast[range].map { $0.dew_point }.reduce(0, +)
+            let averageDewPointFahrenheit = range.count > 0 ? sumDewPointFahrenheit / Double(range.count) : 0
+            let averageDewPointCelsius = (averageDewPointFahrenheit - 32) * 5 / 9
+
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
+            return (hourString, averageDewPointCelsius)
+        }
+    }
+    func convertToFahrenheit(_ fahrenheit: Double) -> Double {
+        return (fahrenheit - 32) * 5 / 9
+    }
+    
+    func aggregatePoPByThreeHours() -> [(hour: String, pop: Double)] {
+        // Limit the data to the first 24 hours
+        let limitedForecast = weatherController.hourlyForecast.prefix(24)
+
+        return stride(from: 0, to: limitedForecast.count, by: 3).map { startIndex -> (String, Double) in
+            let endIndex = min(startIndex + 3, limitedForecast.count)
+            let range = startIndex..<endIndex
+
+            let sumPoP = limitedForecast[range].map { $0.pop }.reduce(0, +)
+            let averagePoP = range.count > 0 ? sumPoP / Double(range.count) : 0
+
+            let hourString = formatHourString(from: limitedForecast[startIndex].dt)
+            return (hourString, averagePoP)
+        }
+    }
+    
+    func averagePoPForToday() -> Double {
+        let totalHours = min(weatherController.hourlyForecast.count, 24)
+        guard totalHours > 0 else { return 0.0 }
+
+        let totalPoP = weatherController.hourlyForecast.prefix(24).map { $0.pop }.reduce(0, +)
+        return totalPoP / Double(totalHours)
+    }
+    
+    
 }
 
 

@@ -49,9 +49,15 @@ struct HourlyWeather: Decodable {
     var wind_speed: Double
     var clouds: Int
     var uvi: Double
+    var feels_like: Double
+    var humidity: Int
+    var visibility: Int
+    var pressure: Int
+    var dew_point: Double
+    var pop: Double
 
     enum CodingKeys: String, CodingKey {
-        case dt, temp, weather, rain, snow, wind_speed, clouds, uvi
+        case dt, temp, weather, rain, snow, wind_speed, clouds, uvi, feels_like, humidity, visibility, pressure, dew_point, pop
     }
 }
 
