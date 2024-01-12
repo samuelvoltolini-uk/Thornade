@@ -1,15 +1,34 @@
-//
-//  OtherPlacesView.swift
-//  WeatherAPP
-//
-//  Created by Sam Voltolini on 10/01/2024.
-//
 
 import SwiftUI
 
 struct OtherPlacesView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            ZStack {
+                
+                
+            }
+            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
+            .background(Color(red: 0.12, green: 0.12, blue: 0.12))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    CustomTitleViewPlaces(title: "Places")
+                }
+            }
+        }
+    }
+}
+
+struct CustomTitleViewPlaces: View {
+    
+    @StateObject var weatherController = WeatherController()
+    var title: String
+    
+    var body: some View {
+        Text("Places")
+            .font(Font.custom("Poppins-Bold", size: 24))
+            .kerning(1)
     }
 }
 

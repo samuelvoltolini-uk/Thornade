@@ -49,6 +49,7 @@ struct DetailsWeatherView: View {
                             .kerning(1)
                             .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                             .padding(.bottom, 5)
+                            .padding(.top, 5)
                         
                         ZStack {
                             

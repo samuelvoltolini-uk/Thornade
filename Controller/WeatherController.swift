@@ -103,14 +103,10 @@ class WeatherController: NSObject, ObservableObject, CLLocationManagerDelegate {
         fetchWeather(latitude: latitude, longitude: longitude)
     }
     
-    func dayOfWeek(for timestamp: Int) -> String {
-        // Convert timestamp to a Date
-        let date = Date(timeIntervalSince1970: Double(timestamp))
-        // Create a DateFormatter
+    func formatDate(timestamp: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         let dateFormatter = DateFormatter()
-        // Set the date format to weekday
-        dateFormatter.dateFormat = "EEEE" // "EEEE" is the format for full weekday name
-        // Return the formatted date string
+        dateFormatter.dateFormat = "EEEE" // Format for day of the week
         return dateFormatter.string(from: date)
     }
 }
