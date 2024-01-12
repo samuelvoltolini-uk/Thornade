@@ -27,6 +27,8 @@ struct NextDaysWeatherView: View {
                                             .kerning(1)
                                             .foregroundColor(Color(red: 0.74, green: 0.74, blue: 0.76))
                                             .padding(.leading, 10)
+                                        
+                                        
 
                                         Spacer()
 
@@ -38,6 +40,8 @@ struct NextDaysWeatherView: View {
                                         TemperatureBar(minTemp: weatherController.convertToFahrenheit(fahrenheit: dayWeather.temp.min), maxTemp: weatherController.convertToFahrenheit(fahrenheit: dayWeather.temp.max))
                                             .frame(width: 110, height: 5)
                                             .cornerRadius(5)
+                                        
+                                
 
                                         Text("\(weatherController.convertToFahrenheit(fahrenheit: dayWeather.temp.max), specifier: "%.0f")°")
                                             .font(Font.custom("Poppins-Bold", size: 14))
