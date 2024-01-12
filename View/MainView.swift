@@ -8,7 +8,6 @@ struct MainView: View {
                     Label("Home", systemImage: "house.fill")
                 }
             
-            
             DetailsWeatherView()
                 .tabItem {
                     Label("Details", systemImage: "chart.bar.fill")
